@@ -79,6 +79,17 @@ test("glucoseTarget — context-dependent cited target", () => {
   assert.equal(VS.glucoseTarget(200, "random"), null); // no cited target
 });
 
+test("glucoseTarget — exact ADA boundary semantics", () => {
+  // ADA: preprandial "80–130 mg/dL" — both ends INCLUSIVE
+  assert.equal(VS.glucoseTarget(80, "fasting"), "in cited ADA target");
+  assert.equal(VS.glucoseTarget(130, "fasting"), "in cited ADA target");
+  assert.equal(VS.glucoseTarget(79, "fasting"), "outside cited ADA target");
+  assert.equal(VS.glucoseTarget(131, "fasting"), "outside cited ADA target");
+  // ADA: peak postprandial "<180 mg/dL" — 180 itself is OUTSIDE
+  assert.equal(VS.glucoseTarget(179, "post-meal"), "in cited ADA target");
+  assert.equal(VS.glucoseTarget(180, "post-meal"), "outside cited ADA target");
+});
+
 /* ---- CSV (RFC 4180) ------------------------------------------ */
 test("csvRow — quotes only fields that need it, doubles inner quotes", () => {
   assert.equal(

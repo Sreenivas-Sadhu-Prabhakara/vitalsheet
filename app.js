@@ -19,6 +19,7 @@
   var prefs = loadPrefs();          // { bands:bool, mmol:bool, showBmi:bool }
   var mode = "bp";
   var editId = null;
+  var printRange = null;            // { from, to } while printing — filters the table
 
   function load() {
     try {
@@ -78,6 +79,7 @@
       var on = x === m;
       tab.setAttribute("aria-selected", on ? "true" : "false");
     });
+    $("panel").setAttribute("aria-labelledby", "tab-" + m);
     document.querySelectorAll(".mode-fields").forEach(function (el) {
       el.hidden = el.getAttribute("data-mode") !== m;
     });
@@ -289,6 +291,13 @@
 
   function renderTable() {
     var head = $("logHead"), body = $("logBody"), rows = state[mode].slice().sort(byDateDesc);
+    if (printRange) {
+      rows = rows.filter(function (r) {
+        if (printRange.from && r.date < printRange.from) return false;
+        if (printRange.to && r.date > printRange.to) return false;
+        return true;
+      });
+    }
     var titles = { bp: "Blood-pressure log", glucose: "Blood-glucose log", weight: "Weight & BMI log" };
     $("trendTitle").textContent = titles[mode];
     var empt = $("empty");
@@ -319,12 +328,14 @@
 
   var NOTES_TH = '<th class="notes-col">Clinician notes</th>';
   var NOTES_TD = '<td class="notes-col"></td>';
+  var BAND_TH = '<th class="bandcell">Band</th>';
   function headRow() {
     if (mode === "bp")
-      return "<tr><th>Time</th><th>Systolic</th><th>Diastolic</th><th>Pulse</th><th>SpO₂</th><th>Context</th><th>Band</th>" + NOTES_TH + "<th class=\"noprint\">Edit</th></tr>";
+      return "<tr><th>Time</th><th>Systolic</th><th>Diastolic</th><th>Pulse</th><th>SpO₂</th><th>Context</th>" + BAND_TH + NOTES_TH + "<th class=\"noprint\">Edit</th></tr>";
     if (mode === "glucose")
-      return "<tr><th>Time</th><th>Glucose</th><th>Context</th><th>Band</th>" + NOTES_TH + "<th class=\"noprint\">Edit</th></tr>";
-    return "<tr><th>Time</th><th>Weight</th><th>BMI</th><th>Band</th>" + NOTES_TH + "<th class=\"noprint\">Edit</th></tr>";
+      return "<tr><th>Time</th><th>Glucose</th><th>Context</th>" + BAND_TH + NOTES_TH + "<th class=\"noprint\">Edit</th></tr>";
+    var bmiCols = prefs.showBmi ? "<th>BMI</th>" + BAND_TH : "";
+    return "<tr><th>Time</th><th>Weight</th>" + bmiCols + NOTES_TH + "<th class=\"noprint\">Edit</th></tr>";
   }
 
   function dataRow(r) {
@@ -347,8 +358,11 @@
       bmiVal = VS.bmi(r.weight, m).toFixed(1);
       tag = bmiTag(r);
     }
+    var bmiCells = prefs.showBmi
+      ? '<td class="num">' + bmiVal + '</td><td class="bandcell">' + chip(tag) + "</td>"
+      : "";
     return "<tr><td>" + esc(r.time) + '</td><td class="num">' + r.weight.toFixed(1) +
-      ' kg</td><td class="num">' + bmiVal + '</td><td class="bandcell">' + chip(tag) + "</td>" + actions + "</tr>";
+      " kg</td>" + bmiCells + actions + "</tr>";
   }
 
   function prettyDate(iso) {
@@ -404,6 +418,35 @@
     download("vitalsheet-backup-" + todayISO() + ".json", JSON.stringify(payload, null, 2), "application/json");
     msg($("dataMsg"), "Backup downloaded.");
   }
+  /* Coerce every imported record to the exact typed shape the app
+     writes, and regenerate ids — so a hand-edited or malicious backup
+     can never smuggle markup or odd types into innerHTML paths. */
+  function numOrNull(v) { var n = Number(v); return isFinite(n) ? n : null; }
+  function isoDate(v) { return /^\d{4}-\d{2}-\d{2}$/.test(String(v)) ? String(v) : null; }
+  function hm(v) { return /^\d{2}:\d{2}$/.test(String(v)) ? String(v) : "00:00"; }
+  function sanitizeRecords(list, m) {
+    if (!Array.isArray(list)) return [];
+    var out = [];
+    list.forEach(function (r) {
+      if (!r || typeof r !== "object") return;
+      var date = isoDate(r.date); if (!date) return;
+      var rec = { id: uid(), date: date, time: hm(r.time) };
+      if (m === "bp") {
+        rec.sys = numOrNull(r.sys); rec.dia = numOrNull(r.dia);
+        if (rec.sys == null || rec.dia == null) return;
+        rec.pulse = numOrNull(r.pulse); rec.spo2 = numOrNull(r.spo2);
+        rec.arm = (r.arm === "left" || r.arm === "right") ? r.arm : "";
+        rec.seated = !!r.seated;
+      } else if (m === "glucose") {
+        rec.glu = numOrNull(r.glu); if (rec.glu == null) return;
+        rec.ctx = ({ fasting: 1, "post-meal": 1, random: 1 })[r.ctx] ? r.ctx : "random";
+      } else {
+        rec.weight = numOrNull(r.weight); if (rec.weight == null) return;
+      }
+      out.push(rec);
+    });
+    return out;
+  }
   function jsonImport(file) {
     var reader = new FileReader();
     reader.onload = function () {
@@ -411,15 +454,11 @@
         var p = JSON.parse(reader.result);
         var d = p && p.data ? p.data : p;
         state = {
-          bp: Array.isArray(d.bp) ? d.bp : [],
-          glucose: Array.isArray(d.glucose) ? d.glucose : [],
-          weight: Array.isArray(d.weight) ? d.weight : [],
-          height: typeof d.height === "number" ? d.height : null
+          bp: sanitizeRecords(d.bp, "bp"),
+          glucose: sanitizeRecords(d.glucose, "glucose"),
+          weight: sanitizeRecords(d.weight, "weight"),
+          height: numOrNull(d.height)
         };
-        // ensure ids
-        ["bp", "glucose", "weight"].forEach(function (k) {
-          state[k].forEach(function (r) { if (!r.id) r.id = uid(); });
-        });
         save(); render();
         msg($("dataMsg"), "Backup restored.");
       } catch (e) { msg($("dataMsg"), "Could not read that file — is it a vitalsheet JSON backup?", true); }
@@ -480,11 +519,24 @@
       hdr.id = "printHeader"; hdr.className = "print-only";
       document.querySelector("main").insertBefore(hdr, document.querySelector("main").firstChild);
     }
+    var verifiedOn = BANDS[0].verified_on;
     hdr.innerHTML = "<h1>vitalsheet — clinic-ready trend sheet</h1><p>" +
       esc(meta.join("  •  ")) + "</p><p class=\"print-mode\">" +
       ({ bp: "Blood pressure (mmHg)", glucose: "Blood glucose", weight: "Weight & BMI" }[mode]) +
-      " — averages are the plain arithmetic mean of logged readings.</p>";
+      " — averages are the plain arithmetic mean of logged readings.</p>" +
+      '<p class="print-sources">Band tags quote published wording verbatim: 2017 ACC/AHA BP categories (heart.org) · ' +
+      "ADA Standards of Care glucose targets (targets are individualized) · WHO BMI classification — verified " +
+      esc(verifiedOn) + ". Not a medical device; no interpretation beyond the cited bands.</p>";
+    // apply the date-range filter to the printed table, then restore
+    printRange = (from || to) ? { from: from, to: to } : null;
+    if (printRange) renderTable();
+    var restore = function () {
+      if (printRange) { printRange = null; renderTable(); }
+      window.removeEventListener("afterprint", restore);
+    };
+    window.addEventListener("afterprint", restore);
     window.print();
+    restore();
   }
 
   /* ============================================================

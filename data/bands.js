@@ -67,7 +67,7 @@ const BANDS = [
   /* ---- (b) 4 ADA facts — glycemic goals, nonpregnant adults --- */
   {
     id: "glu-preprandial", mode: "glucose", context: "fasting", label: "in cited ADA target",
-    lo: 80, hi: 130, unit: "mg/dL",
+    lo: 80, hi: 130, hi_inclusive: true, unit: "mg/dL",
     rule: "Preprandial capillary plasma glucose 80–130 mg/dL (4.4–7.2 mmol/L).",
     source_title: "ADA — Glycemic Goals and Hypoglycemia, Standards of Care in Diabetes (Table 6.2, nonpregnant adults)",
     source_url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC10725808/",

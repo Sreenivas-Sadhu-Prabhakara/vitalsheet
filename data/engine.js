@@ -70,8 +70,10 @@
     else if (context === "post-meal") b = band("glu-postprandial");
     else return null; // 'random' — no single cited target; do not classify
     const geLo = (b.lo === null) || (mgdl >= b.lo);
-    const leHi = (b.hi === null) || (mgdl < b.hi);
-    return (geLo && leHi) ? "in cited ADA target" : "outside cited ADA target";
+    // ADA wording: preprandial "80–130 mg/dL" is INCLUSIVE of 130;
+    // postprandial "<180 mg/dL" is EXCLUSIVE. The corpus carries the flag.
+    const okHi = (b.hi === null) || (b.hi_inclusive ? mgdl <= b.hi : mgdl < b.hi);
+    return (geLo && okHi) ? "in cited ADA target" : "outside cited ADA target";
   }
 
   /* ---- BMI value (display) ----------------------------------- */
