@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 512px; height: 512px; overflow: hidden; }
+  /* 12% safe padding for maskable icons */
+  body { background: #34D6C0; display: flex; align-items: center; justify-content: center; }
+  .plate {
+    width: 400px; height: 400px; border-radius: 92px; background: #0A0B0C;
+    border: 2px solid #23262B; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 10px;
+    box-shadow: inset 0 0 60px rgba(0,0,0,0.7);
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  .plate .n {
+    font-weight: 800; font-size: 150px; line-height: 0.9; color: #4FEAD2;
+    letter-spacing: 0.02em; text-shadow: 0 0 26px rgba(79,234,210,0.5);
+  }
+  .plate .slash { font-weight: 800; font-size: 66px; color: #45494f; line-height: 0.4; }
+  .plate .n.small { font-size: 150px; }
+</style>
+</head>
+<body>
+  <div class="plate">
+    <span class="n">120</span>
+    <span class="slash">/</span>
+    <span class="n small">80</span>
+  </div>
+</body>
+</html>

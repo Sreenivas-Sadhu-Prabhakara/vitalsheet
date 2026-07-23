@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  :root {
+    --bg: #101113; --panel: #0A0B0C; --lcd: #4FEAD2; --accent: #34D6C0;
+    --text: #ECEAE4; --muted: #A7ADB4; --line: #2E333A;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; }
+  body {
+    position: relative; font-family: var(--sans); color: var(--text);
+    background:
+      radial-gradient(900px 520px at 82% -10%, rgba(52,214,192,0.12), transparent 60%),
+      linear-gradient(180deg, #0d0e10 0%, #101113 100%);
+    -webkit-font-smoothing: antialiased;
+  }
+  /* faint grid — clinical graph-paper feel */
+  .grid { position: absolute; inset: 0; opacity: 0.35;
+    background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 48px 48px; -webkit-mask-image: linear-gradient(180deg, transparent, #000 40%, #000 60%, transparent); }
+  .frame { position: absolute; inset: 0; padding: 78px 88px; display: flex; flex-direction: column; justify-content: space-between; }
+  .brand { display: flex; align-items: center; gap: 18px; }
+  .logo { width: 66px; height: 66px; border-radius: 15px; background: var(--panel); border: 1px solid #23262B;
+    display: flex; align-items: center; justify-content: center; }
+  .logo span { font-family: var(--mono); font-weight: 800; font-size: 30px; color: var(--lcd); text-shadow: 0 0 12px rgba(79,234,210,0.5); }
+  .wordmark { font-size: 54px; font-weight: 800; letter-spacing: -0.035em; }
+
+  .center { display: flex; align-items: center; gap: 54px; }
+  /* the seven-segment readout — the hero */
+  .readout { background: var(--panel); border: 1px solid #23262B; border-radius: 20px;
+    padding: 34px 46px; box-shadow: inset 0 0 50px rgba(0,0,0,0.7); text-align: center; }
+  .readout .big { font-family: var(--mono); font-weight: 800; font-size: 150px; line-height: 1;
+    color: var(--lcd); letter-spacing: 0.02em; text-shadow: 0 0 26px rgba(79,234,210,0.4); }
+  .readout .big .slash { color: #45494f; text-shadow: none; }
+  .readout .unit { margin-top: 14px; font-size: 24px; letter-spacing: 0.22em; text-transform: uppercase; color: #7f868d; }
+
+  .headline { max-width: 430px; }
+  .headline h1 { font-size: 46px; font-weight: 800; letter-spacing: -0.025em; line-height: 1.1; }
+  .headline h1 em { font-style: normal; color: var(--accent); }
+  .headline p { margin-top: 18px; font-size: 25px; color: var(--muted); line-height: 1.35; }
+
+  .chips { display: flex; gap: 12px; }
+  .chip { display: inline-flex; align-items: center; gap: 9px; padding: 11px 20px; border: 1px solid var(--line);
+    border-radius: 999px; font-size: 22px; font-weight: 600; color: var(--muted); }
+  .chip b { color: var(--accent); }
+</style>
+</head>
+<body>
+  <div class="grid"></div>
+  <div class="frame">
+    <div class="brand">
+      <div class="logo"><span>♥</span></div>
+      <div class="wordmark">vitalsheet</div>
+    </div>
+
+    <div class="center">
+      <div class="readout">
+        <div class="big">120<span class="slash">/</span>80</div>
+        <div class="unit">mmHg</div>
+      </div>
+      <div class="headline">
+        <h1>Your home readings, <em>one clinic-ready sheet.</em></h1>
+        <p>BP, glucose &amp; weight &rarr; dated table with averages.</p>
+      </div>
+    </div>
+
+    <div class="chips">
+      <span class="chip"><b>7 &amp; 30-day</b> averages</span>
+      <span class="chip"><b>A4</b> print &amp; CSV</span>
+      <span class="chip"><b>Offline</b> — nothing sent</span>
+    </div>
+  </div>
+</body>
+</html>

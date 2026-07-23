@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'none'; img-src 'self' data:; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; object-src 'none'">
+  <title>vitalsheet — BP &amp; blood sugar log sheet for home readings</title>
+  <meta name="description" content="A clinic-ready BP log sheet: turn home blood-pressure, glucose and weight readings into one dated trend sheet with averages. Print to A4 or export CSV. Fully offline — nothing ever leaves this device.">
+  <meta name="color-scheme" content="dark light">
+  <link rel="canonical" href="https://sreenivas-sadhu-prabhakara.github.io/vitalsheet/">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta name="author" content="Sreenivas Sadhu Prabhakara">
+  <meta name="keywords" content="bp log sheet, blood pressure log, blood sugar log sheet, glucose log, home bp chart, bp diary printable, blood pressure tracker offline, bmi log, clinic trend sheet, hypertension log, diabetes log book">
+  <meta name="theme-color" content="#101113" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#F6F5F1" media="(prefers-color-scheme: light)">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="vitalsheet">
+  <meta property="og:title" content="vitalsheet — BP &amp; blood sugar log sheet for home readings">
+  <meta property="og:description" content="Turn scattered home BP, glucose and weight readings into one dated, clinic-ready trend sheet with averages. Print to A4 or export CSV. Fully offline.">
+  <meta property="og:url" content="https://sreenivas-sadhu-prabhakara.github.io/vitalsheet/">
+  <meta property="og:locale" content="en_IN">
+  <meta property="og:image" content="https://sreenivas-sadhu-prabhakara.github.io/vitalsheet/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="vitalsheet — a seven-segment 120 over 80 readout above a clinic-ready trend sheet">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="vitalsheet — BP &amp; blood sugar log sheet for home readings">
+  <meta name="twitter:description" content="Turn scattered home BP, glucose and weight readings into one dated, clinic-ready trend sheet with averages. Print to A4 or export CSV. Fully offline.">
+  <meta name="twitter:image" content="https://sreenivas-sadhu-prabhakara.github.io/vitalsheet/og-image.png">
+  <meta name="twitter:image:alt" content="vitalsheet — a seven-segment 120 over 80 readout above a clinic-ready trend sheet">
+
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="manifest" href="manifest.webmanifest">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "vitalsheet",
+    "description": "A clinic-ready trend sheet that turns home blood-pressure, glucose and weight readings into one dated table with 7-day and 30-day averages, cited reference-band tags, A4 print and CSV export. Runs fully offline.",
+    "url": "https://sreenivas-sadhu-prabhakara.github.io/vitalsheet/",
+    "applicationCategory": "HealthApplication",
+    "operatingSystem": "Any (modern web browser)",
+    "browserRequirements": "Requires a modern web browser with JavaScript enabled.",
+    "isAccessibleForFree": true,
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "INR" },
+    "license": "https://opensource.org/licenses/MIT",
+    "author": { "@type": "Person", "name": "Sreenivas Sadhu Prabhakara" },
+    "softwareVersion": "0.1.0",
+    "featureList": [
+      "Log BP, glucose and weight with a fast numeric form",
+      "7-day and 30-day plain averages of logged readings",
+      "Cited reference-band tags (ACC/AHA, ADA, WHO) shown verbatim",
+      "Print a clinic-ready A4 trend sheet",
+      "Export RFC-4180 CSV and full JSON backup",
+      "Runs 100% offline — readings never leave your device"
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Does vitalsheet send my readings anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. A strict Content-Security-Policy sets connect-src 'none', so the page cannot make any network request. Your readings live only in this browser's local storage and are never uploaded. Regular CSV or JSON export is the only backup."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I make a printable BP log sheet for my next appointment?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Log your readings, optionally set a date range and add a name and date of birth (kept only on your device), then choose Print / save as PDF. The A4 sheet shows a dated table, the 7-day and 30-day averages, a blank clinician-notes column and the sources with verified-on dates."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does vitalsheet tell me if my blood pressure or sugar is bad?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. It is not a medical device and gives no advice. It shows the plain arithmetic average of what you logged and, if you want, tags each reading with published reference-band wording (ACC/AHA blood-pressure categories, the ADA glucose target, WHO BMI classes) quoted verbatim with a verified-on date. It never answers 'is this bad?' — take all interpretation to your clinician."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I convert glucose between mg/dL and mmol/L?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Enter glucose in mg/dL and toggle the mmol/L display; vitalsheet divides by 18.016 (the glucose molar-mass factor) and rounds to one decimal place."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#log">Skip to my log</a>
+
+  <header class="topbar">
+    <div class="wrap topbar__inner">
+      <div class="brand">
+        <span class="brand__lcd" aria-hidden="true">
+          <span class="seg">120</span><span class="seg seg--slash">/</span><span class="seg">80</span>
+        </span>
+        <span class="brand__name">vitalsheet</span>
+      </div>
+      <div class="topbar__meta">
+        <span class="pill pill--offline">● Offline &middot; no network</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero wrap" id="top">
+      <p class="eyebrow">Home BP &middot; glucose &middot; weight &rarr; one clinic-ready sheet</p>
+      <h1 class="hero__title">BP &amp; Blood Sugar Log Sheet — Clinic-Ready Trend Sheet for Home BP, Glucose &amp; Weight</h1>
+      <p class="hero__lede">
+        Log your cuff, glucometer and scale numbers as you take them. vitalsheet keeps a dated
+        table with 7-day and 30-day averages and prints a clean A4 sheet to hand your doctor.
+        It is a log book, not a diagnosis — it shows only your numbers and cited reference bands.
+      </p>
+      <div class="privacy-banner" role="note">
+        <strong>Your readings never leave this browser.</strong> A strict
+        Content-Security-Policy (<code>connect-src 'none'</code>) makes that enforced, not just
+        promised — the page cannot send data anywhere. Export CSV or JSON to keep a backup.
+      </div>
+    </section>
+
+    <!-- ===== mode tabs ===== -->
+    <section class="wrap">
+      <div class="tabs" role="tablist" aria-label="Reading type">
+        <button class="tab" role="tab" id="tab-bp" aria-selected="true" aria-controls="panel">Blood pressure</button>
+        <button class="tab" role="tab" id="tab-glucose" aria-selected="false" aria-controls="panel">Blood glucose</button>
+        <button class="tab" role="tab" id="tab-weight" aria-selected="false" aria-controls="panel">Weight &amp; BMI</button>
+      </div>
+    </section>
+
+    <!-- ===== add-reading + trend panel ===== -->
+    <section class="wrap panel" id="panel" role="tabpanel" aria-labelledby="tab-bp">
+
+      <!-- entry card with the seven-segment device readout -->
+      <div class="card entry">
+        <div class="readout" aria-hidden="true" id="readout">
+          <span class="readout__digits" id="readoutMain">---</span>
+          <span class="readout__unit" id="readoutUnit">mmHg</span>
+        </div>
+        <form class="entry__form" id="entryForm" autocomplete="off" novalidate>
+          <div class="field">
+            <label for="fDate">Date</label>
+            <input type="date" id="fDate" required>
+          </div>
+          <div class="field">
+            <label for="fTime">Time</label>
+            <input type="time" id="fTime" required>
+          </div>
+
+          <!-- BP fields -->
+          <div class="mode-fields" data-mode="bp">
+            <div class="field"><label for="fSys">Systolic (mmHg)</label>
+              <input type="number" id="fSys" inputmode="numeric" min="40" max="300" step="1"></div>
+            <div class="field"><label for="fDia">Diastolic (mmHg)</label>
+              <input type="number" id="fDia" inputmode="numeric" min="20" max="200" step="1"></div>
+            <div class="field"><label for="fPulse">Pulse (bpm) <span class="opt">optional</span></label>
+              <input type="number" id="fPulse" inputmode="numeric" min="20" max="250" step="1"></div>
+            <div class="field"><label for="fSpo2">SpO₂ (%) <span class="opt">optional</span></label>
+              <input type="number" id="fSpo2" inputmode="numeric" min="50" max="100" step="1"></div>
+            <div class="field"><label for="fArm">Arm</label>
+              <select id="fArm"><option value="">—</option><option>left</option><option>right</option></select></div>
+            <div class="field field--check">
+              <label><input type="checkbox" id="fSeated"> Seated, rested</label>
+            </div>
+          </div>
+
+          <!-- Glucose fields -->
+          <div class="mode-fields" data-mode="glucose" hidden>
+            <div class="field"><label for="fGlu">Glucose (mg/dL)</label>
+              <input type="number" id="fGlu" inputmode="numeric" min="10" max="900" step="1"></div>
+            <div class="field"><label for="fCtx">Context</label>
+              <select id="fCtx">
+                <option value="fasting">Fasting / before meal</option>
+                <option value="post-meal">After meal (peak)</option>
+                <option value="random">Random</option>
+              </select></div>
+          </div>
+
+          <!-- Weight fields -->
+          <div class="mode-fields" data-mode="weight" hidden>
+            <div class="field"><label for="fWeight">Weight (kg)</label>
+              <input type="number" id="fWeight" inputmode="decimal" min="2" max="400" step="0.1"></div>
+            <div class="field"><label for="fHeight">Height (cm) <span class="opt">for BMI</span></label>
+              <input type="number" id="fHeight" inputmode="decimal" min="40" max="260" step="0.1"></div>
+          </div>
+
+          <div class="entry__actions">
+            <button type="submit" class="btn btn--primary" id="saveBtn">Add reading</button>
+            <button type="button" class="btn" id="cancelEditBtn" hidden>Cancel edit</button>
+          </div>
+          <p class="entry__msg" id="entryMsg" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+
+      <!-- controls row -->
+      <div class="controls">
+        <label class="toggle">
+          <input type="checkbox" id="bandToggle" checked>
+          <span id="bandToggleLabel">Band tags shown</span>
+        </label>
+        <label class="toggle" id="mmolWrap" hidden>
+          <input type="checkbox" id="mmolToggle">
+          <span>Show glucose in mmol/L</span>
+        </label>
+        <label class="toggle" id="unitWrap" hidden>
+          <input type="checkbox" id="unitToggle">
+          <span>Show BMI</span>
+        </label>
+      </div>
+
+      <!-- averages -->
+      <div class="averages card" id="averages" aria-live="polite"></div>
+
+      <!-- trend table -->
+      <div class="trend">
+        <h2 class="trend__title" id="trendTitle">Blood-pressure log</h2>
+        <div class="tablewrap">
+          <table class="log" id="logTable">
+            <thead id="logHead"></thead>
+            <tbody id="logBody"></tbody>
+          </table>
+        </div>
+        <p class="empty" id="empty"></p>
+      </div>
+    </section>
+
+    <!-- ===== clinic print header (only visible on print) ===== -->
+    <section class="wrap print-controls card">
+      <h2>Print a clinic-ready sheet</h2>
+      <p class="muted">Name and date of birth are optional and stay on this device — they appear on the printout only.</p>
+      <div class="print-fields">
+        <div class="field"><label for="pName">Name (optional)</label><input type="text" id="pName" autocomplete="off"></div>
+        <div class="field"><label for="pDob">Date of birth (optional)</label><input type="date" id="pDob"></div>
+        <div class="field"><label for="pFrom">From (optional)</label><input type="date" id="pFrom"></div>
+        <div class="field"><label for="pTo">To (optional)</label><input type="date" id="pTo"></div>
+      </div>
+      <div class="print-actions">
+        <button type="button" class="btn btn--primary" id="printBtn">Print / save as PDF</button>
+        <button type="button" class="btn" id="csvModeBtn">Export this log (CSV)</button>
+        <button type="button" class="btn" id="csvAllBtn">Export all logs (CSV)</button>
+      </div>
+    </section>
+
+    <!-- ===== data controls ===== -->
+    <section class="wrap card">
+      <h2>Your data</h2>
+      <p class="muted">Everything is stored in this browser only. Back up regularly — clearing site data erases the log.</p>
+      <div class="print-actions">
+        <button type="button" class="btn" id="jsonExportBtn">Back up all data (JSON)</button>
+        <button type="button" class="btn" id="jsonImportBtn">Restore from JSON backup</button>
+        <input type="file" id="jsonFile" accept="application/json,.json" hidden>
+        <button type="button" class="btn btn--danger" id="eraseBtn">Erase everything</button>
+      </div>
+      <p class="entry__msg" id="dataMsg" role="status" aria-live="polite"></p>
+    </section>
+
+    <!-- ===== sources ===== -->
+    <section class="wrap card" id="sources">
+      <h2>Sources &amp; reference bands</h2>
+      <p class="muted">
+        Every band tag is the source's own published wording, quoted verbatim, with the date we
+        last verified it. vitalsheet renders these exactly; it never re-interprets them.
+        The home-measurement technique lines below appear here only — they are never woven into
+        any calculation.
+      </p>
+      <div id="sourcesList"></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p class="disclaimer">
+        <strong>Not a medical device.</strong> vitalsheet is an informational log book only,
+        not medical advice, and it is not a substitute for professional care. It records the
+        numbers you type, computes their plain arithmetic averages, and shows published reference
+        bands verbatim with a verified-on date. It never answers &ldquo;is this bad?&rdquo; and gives
+        no diagnosis, verdict or trend judgement. The ADA states glycemic targets are individualized;
+        reference bands are dated population guidelines. Take all interpretation to a qualified
+        clinician. Provided under the MIT License &ldquo;as is&rdquo;, without warranty; the author
+        accepts no liability for any loss or harm arising from its use.
+      </p>
+      <p class="colophon">
+        vitalsheet v0.1.0 &middot; runs fully offline &middot; open source (MIT) &middot;
+        &copy; 2026 Sreenivas Sadhu Prabhakara
+      </p>
+    </div>
+  </footer>
+
+  <script src="data/bands.js"></script>
+  <script src="data/strings.js"></script>
+  <script src="data/engine.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

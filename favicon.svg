@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="vitalsheet">
+  <rect width="64" height="64" rx="14" fill="#0A0B0C"/>
+  <rect x="4" y="4" width="56" height="56" rx="11" fill="none" stroke="#34D6C0" stroke-width="2"/>
+  <text x="32" y="30" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="20" font-weight="800" fill="#4FEAD2">120</text>
+  <text x="32" y="50" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="20" font-weight="800" fill="#4FEAD2">80</text>
+  <line x1="20" y1="35" x2="44" y2="35" stroke="#45494f" stroke-width="2" stroke-linecap="round"/>
+</svg>
